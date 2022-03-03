@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -78,13 +78,43 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+
+    //access the row
+    //make a counter
+    //check if elmt is 1
+    //yes, update counter
+
+    //if counter is more than 1
+    //there is a conflict
+
+    //[0, 1, 0 , 1]
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var row = this.get(rowIndex);
+      var counter = 0;
+      row.forEach(function(element) {
+        if (element === 1) {
+          counter++;
+        }
+      });
+      if (counter > 1) {
+        return true;
+      }
+      return false;
+
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      //We want to get all arrays in the matrix (entire board)
+      var board = this.rows();
+      // Iterate over each array in the board
+      for (var i = 0; i < board.length; i++) {
+        // Check each array for conflict
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -93,13 +123,47 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+
+
+
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+    // Create a counter variable
+      var counter = 0;
+      // Access all of the rows
+      var board = this.rows();
+      // Check element at the column index for each row
+      for (var i = 0; i < board.length; i++) {
+      // if element is 1
+        if (board[i][colIndex] === 1) {
+        // update counter (we found a rook/queen)
+          counter++;
+        }
+      }
+      // if the counter is greater than 1
+      // return true (conflict found)
+      if (counter > 1) {
+        return true;
+      }
+      // otherwise return false
+      return false;
     },
 
     // test if any columns on this board contain conflicts
+
+    //get length of board
+    //iterate over board
+    //if each i has a column conflict
+    //true
+    //otherwise, false
+
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      for (var i = 0; i < board.length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -108,13 +172,69 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+
+
+    // Changed starting parameters
+    hasMajorDiagonalConflictAt: function(startingRow, startingColumn) {
+      // Create the board
+      var board = this.rows();
+
+      // Always start at top row unless specified
+      var startingRow = 0 || startingRow;
+
+      // Column to start at
+      var startingColumn = startingColumn;
+
+      // Store collection of items in the diagonal
+      var diagonalItems = [];
+
+      while (this._isInBounds(startingRow, startingColumn)) {
+        var nextItemDown = board[startingRow][startingColumn];
+        diagonalItems.push(nextItemDown);
+
+        // Get to the next diagonal item down
+        startingRow++;
+        startingColumn++;
+      }
+
+      // Exit isInBounds here
+      var rooksFound = 0;
+      // Check every item in our collection for Rooks/Queens
+      diagonalItems.forEach(function(item) {
+        if (rooksFound > 1) {
+          return;
+        }
+        if (item === 1) {
+          rooksFound++;
+        }
+      });
+
+      return (rooksFound > 1);
     },
 
-    // test if any major diagonals on this board contain conflicts
+
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      // Get Number of rows/columns
+      var numberOfRowsandColumns = board.length;
+      // Call helper function to cover upper right half of matrix
+      var result = false;
+      for (var col = 0; col < numberOfRowsandColumns; col++) {
+        result = this.hasMajorDiagonalConflictAt(0, col);
+
+        // At any point if a collision is found, we should return
+        if (result) {
+          return result;
+        }
+      }
+      // Start covering lower half of matrix by switching rows
+      for (var row = 0; row < numberOfRowsandColumns; row++) {
+        result = this.hasMajorDiagonalConflictAt(row, 0);
+        if (result) {
+          return result;
+        }
+      }
+      return result;
     },
 
 
@@ -123,14 +243,77 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+
+    //change starting parameters
+    //create board
+    // Always start at top row unless specified
+    // Set the column to start at
+    // Store collection of items in the diagonal
+    // Get to the next diagonal item down
+    // Exit isInBounds here
+    // Check every item in our collection for Rooks/Queens
+
+    hasMinorDiagonalConflictAt: function(startingRow, startingColumn) {
+      // Create the board
+      var board = this.rows();
+
+      // Always start at top row unless specified
+      var startingRow = 0 || startingRow;
+
+      // Column to start at
+      var startingColumn = startingColumn;
+
+      // Store collection of items in the diagonal
+      var diagonalItems = [];
+
+      while (this._isInBounds(startingRow, startingColumn)) {
+        var nextItemDown = board[startingRow][startingColumn];
+        diagonalItems.push(nextItemDown);
+
+        // Get to the next diagonal item down
+        startingRow++;
+        startingColumn--;
+      }
+
+      // Exit isInBounds here
+      var rooksFound = 0;
+      // Check every item in our collection for Rooks/Queens
+      diagonalItems.forEach(function(item) {
+        if (rooksFound > 1) {
+          return;
+        }
+        if (item === 1) {
+          rooksFound++;
+        }
+      });
+
+      return (rooksFound > 1);
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
-    }
+      var board = this.rows();
+      // Get Number of rows/columns
+      var numberOfRowsandColumns = board.length;
+      // Call helper function to cover upper right half of matrix
+      var result = false;
+      for (var col = numberOfRowsandColumns - 1; col >= 0; col--) {
+        result = this.hasMinorDiagonalConflictAt(0, col);
+
+        // At any point if a collision is found, we should return
+        if (result) {
+          return result;
+        }
+      }
+      // Start covering lower half of matrix by switching rows
+      for (var row = 0; row < numberOfRowsandColumns; row++) {
+        result = this.hasMinorDiagonalConflictAt(row, numberOfRowsandColumns - 1);
+        if (result) {
+          return result;
+        }
+      }
+      return result;
+    },
 
     /*--------------------  End of Helper Functions  ---------------------*/
 

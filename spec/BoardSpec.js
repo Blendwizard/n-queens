@@ -122,7 +122,6 @@ describe('Board', function() {
     it('should not find a rooks conflict', function() {
       expect(board.hasAnyRooksConflicts()).to.be.equal(false);
     });
-
     it('should find a majorDiagonal conflict', function() {
       expect(board.hasAnyMajorDiagonalConflicts()).to.be.equal(true);
     });
